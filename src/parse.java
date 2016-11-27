@@ -112,13 +112,10 @@ public class parse {
 //		--------------------- minimize here-----------------------
 /*idea: overide compareTo for dfaState 
  * comparing transitions and if final state 
- */
-		System.out.println();
+ */		
 		
-		
-		
+
 		minimizeDFA();
-		
 		
 		
 		
@@ -150,8 +147,6 @@ public class parse {
 		finalState = dfaAcceptingStates;
 		nonFinal = findNonFinalDfaStates();
 		
-		//-----------need to find a way to auto handle this
-		
 		do{
 		int tempFinalSize = finalState.size();
 		int tempNonFinalSize = nonFinal.size();
@@ -162,42 +157,55 @@ public class parse {
 			break;
 		}
 		
+
 		
 		}while(true);
-		
-		
-		//--------------------------------------------------
-		
+				
 		
 		for(dfaState state : nonFinal){
 			minDfaStates.add(state);
-//			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
-//					getStateName(state.map.get('b')));
 		}
 		
 		for(dfaState state : finalState){
 			minDfaStates.add(state);
+		}
+		
+		ArrayList<dfaState> tempL = sortMinDfaStates();
+		
+		
+		for (dfaState state : tempL){
+		System.out.print("\n     "+state.name+":    ");
+		for(int i=0;i<inputs.length-1;i++){
+			System.out.print(getStateName(state.map.get(inputs[i]))+"    ");
+		}	
+	}
+	
+		
+		
+		
+//		for(dfaState state : minDfaStates){
 //			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
 //					getStateName(state.map.get('b')));
+//		}
+//		
+		System.out.println("\n------------------");
+		System.out.println("S: "+ dfaStartingState.name);
+		System.out.print("A: ");
+		
+		for(int i=0;i<dfaAcceptingStates.size();i++){
+			if(i==0)System.out.print("{");
+			System.out.print(dfaAcceptingStates.get(i).name);
+			if(i==dfaAcceptingStates.size()-1){
+				System.out.println("}");
+			}else{
+				System.out.print(",");
+			}
 		}
-		
-		for(dfaState state : minDfaStates){
-			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
-					getStateName(state.map.get('b')));
-		}
-		
-		System.out.println("------------------");
-		
-		
 
 	}
 	
 	public static void checkForDis(){
 		
-//		for(dfaState state : list){
-//			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
-//													getStateName(state.map.get('b')));
-//		}
 		
 		ArrayList<Integer> tempRemove = new ArrayList<Integer>();
 		ArrayList<Integer> tempReplace = new ArrayList<Integer>();
@@ -245,20 +253,7 @@ public class parse {
 				
 			}
 			
-		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		}		
 	}
 	
 	
@@ -271,11 +266,6 @@ public static ArrayList<dfaState> findNonFinalDfaStates(){
 			tempList.add(state);
 		}
 	}
-//
-//	for(dfaState state : tempList){
-//		System.out.println(state.name+":         "+getStateName(state.map.get('a'))
-//							+"    "+getStateName(state.map.get('b')));
-//	}
 	
 	return tempList;
 }
@@ -291,7 +281,7 @@ public static void testStringsFile(Scanner fileScanner){
 		for(int i=0;i<tempChars.length;i++){
 			//need to check of current char is in inputs if not fail
 
-//			System.out.println("\n\n\ntemp char: "+tempChars[i]);
+//			System.out.println("\ntemp char: "+tempChars[i]);
 //			System.out.println("input is a valid input: "+charInInputs(tempChars[i]));
 			if(charInInputs(tempChars[i])){
 			
@@ -309,10 +299,9 @@ public static void testStringsFile(Scanner fileScanner){
 				}
 			
 			}//end of if tempChar character is a valid input	
-//				if(isDfaFinalState(curState)){
-//					System.out.println(tempChars);
-//				}
-			
+		if(isDfaFinalState(curState)){
+			System.out.println(tempChars);
+		}
 	
 	}//end of while
 }
@@ -387,6 +376,20 @@ public static ArrayList<dfaState> sortDfaStates(){
 	return sortedStates;	
 }
 	
+public static ArrayList<dfaState> sortMinDfaStates(){
+	ArrayList<dfaState> sortedStates = new ArrayList<dfaState>();
+	
+		for(dfaState state : minDfaStates){
+			if(state.name == sortedStates.size()){
+				sortedStates.add(state);
+			}
+		}
+	
+	return sortedStates;	
+}
+
+
+
 public static boolean dfaStatesFinsished(){
 		for(dfaState state : dfaStates){
 			if(state.checked == false){
