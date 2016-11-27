@@ -20,6 +20,7 @@ public class parse {
 	
 	static ArrayList<dfaState> finalState;
 	static ArrayList<dfaState> nonFinal;
+	static ArrayList<dfaState> minDfaStates = new ArrayList<dfaState>();
 	
 	
 	public static void main(String[] args) {
@@ -150,30 +151,48 @@ public class parse {
 		nonFinal = findNonFinalDfaStates();
 		
 		//-----------need to find a way to auto handle this
-		checkForDisNonFinal();
-		checkForDisNonFinal();
+		
+		do{
+		int tempFinalSize = finalState.size();
+		int tempNonFinalSize = nonFinal.size();
+		
+		checkForDis();
+		
+		if(tempFinalSize == finalState.size() && tempNonFinalSize == nonFinal.size()){
+			break;
+		}
+		
+		
+		}while(true);
+		
+		
 		//--------------------------------------------------
 		
-		 checkForDisNonFinal();
 		
 		for(dfaState state : nonFinal){
-			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
-					getStateName(state.map.get('b')));
+			minDfaStates.add(state);
+//			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
+//					getStateName(state.map.get('b')));
 		}
 		
 		for(dfaState state : finalState){
+			minDfaStates.add(state);
+//			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
+//					getStateName(state.map.get('b')));
+		}
+		
+		for(dfaState state : minDfaStates){
 			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
 					getStateName(state.map.get('b')));
 		}
 		
-		
-		
+		System.out.println("------------------");
 		
 		
 
 	}
 	
-	public static void checkForDisNonFinal(){
+	public static void checkForDis(){
 		
 //		for(dfaState state : list){
 //			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
