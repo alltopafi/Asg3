@@ -18,6 +18,9 @@ public class parse {
 	static ArrayList<dfaState> sortedStates;
 	static ArrayList<dfaState> dfaAcceptingStates;
 	
+	static ArrayList<dfaState> finalState;
+	static ArrayList<dfaState> nonFinal;
+	
 	
 	public static void main(String[] args) {
 
@@ -142,16 +145,16 @@ public class parse {
 		//remove non reachable states
 		//0 Equivalence (final states from non final states)
 		//1 is if both states on an input go to final or both to non final
-		
-		ArrayList<dfaState> finalState = dfaAcceptingStates;
-		ArrayList<dfaState> nonFinal = findNonFinalDfaStates();
+	
+		finalState = dfaAcceptingStates;
+		nonFinal = findNonFinalDfaStates();
 		
 		//-----------need to find a way to auto handle this
-		nonFinal = checkForDis(nonFinal);
-		nonFinal = checkForDis(nonFinal);
+		checkForDisNonFinal();
+		checkForDisNonFinal();
 		//--------------------------------------------------
 		
-		finalState = checkForDis(finalState);
+		 checkForDisNonFinal();
 		
 		for(dfaState state : nonFinal){
 			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
@@ -170,7 +173,7 @@ public class parse {
 
 	}
 	
-	public static ArrayList<dfaState> checkForDis(ArrayList<dfaState> list){
+	public static void checkForDisNonFinal(){
 		
 //		for(dfaState state : list){
 //			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
@@ -179,10 +182,10 @@ public class parse {
 		
 		ArrayList<Integer> tempRemove = new ArrayList<Integer>();
 		ArrayList<Integer> tempReplace = new ArrayList<Integer>();
-		for(int i=0;i<list.size();i++){
-			for(int k=i+1;k<list.size();k++){
+		for(int i=0;i<nonFinal.size();i++){
+			for(int k=i+1;k<nonFinal.size();k++){
 //				System.out.println(list.get(i).name+" == "+list.get(k).name);
-				if(list.get(i).equals(list.get(k))){
+				if(nonFinal.get(i).equals(nonFinal.get(k))){
 					tempRemove.add(k);
 					tempReplace.add(i);
 				}
@@ -191,17 +194,22 @@ public class parse {
 		
 		
 		for(int i=0;i<tempRemove.size();i++){
-			dfaState stateRem = list.get(tempRemove.get(i));
-			dfaState stateMod = list.get(tempReplace.get(i));
+			dfaState stateRem = nonFinal.get(tempRemove.get(i));
+			dfaState stateMod = nonFinal.get(tempReplace.get(i));
 			
-			//modify the states that point to stateRem to point to stateMod instead
-			//then remove stateRem from the list
-//			System.out.println();
-//			System.out.println("stateRem: "+stateRem.name);
-//			System.out.println("stateMod: "+stateMod.name);
 			
 			for(int k=0;k<inputs.length-1;k++){
-				for(dfaState state : list){
+				for(dfaState state : nonFinal){
+					if(getStateName(state.map.get(inputs[k])) == stateRem.name){
+						//what should it point to?
+						//need to update this for the list not just the the local state
+						state.map.replace(inputs[k], stateMod.nfaStates);
+					
+					}
+				
+				}
+				
+				for(dfaState state : finalState){
 					if(getStateName(state.map.get(inputs[k])) == stateRem.name){
 						//what should it point to?
 						//need to update this for the list not just the the local state
@@ -213,19 +221,25 @@ public class parse {
 				
 				
 				
-				
-					list.remove(stateRem);
+				finalState.remove(stateRem);
+				nonFinal.remove(stateRem);
 				
 			}
 			
 		}
 		
-//		System.out.println("\n----------- after --------");
-//		for(dfaState state : list){
-//			System.out.println(state.name+":        "+getStateName(state.map.get('a'))+"     "+
-//													getStateName(state.map.get('b')));
-//		}
-		return list;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 	
 	
